@@ -52,6 +52,8 @@ public class GameView extends View {
     private Paint pocketPaint;
     private Paint linePaint;
     
+    private float tableX;
+    private float tableY;
     private float tableWidth;
     private float tableHeight;
     private float ballRadius;
@@ -135,13 +137,31 @@ public class GameView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         
-        tableWidth = w;
-        tableHeight = h;
+        // 计算 3:1 宽高比的桌面大小，并在屏幕中间显示
+        float padding = 40f; // 四周留白
+        float maxTableWidth = w - padding * 2;
+        float maxTableHeight = h - padding * 2;
         
-        // 根据屏幕大小调整球和袋口大小
-        float minDimension = Math.min(w, h);
-        ballRadius = minDimension / 40;
-        pocketRadius = ballRadius * 2;
+        // 保持 3:1 比例
+        float widthRatio = maxTableWidth / 3f;
+        float heightRatio = maxTableHeight / 1f;
+        
+        // 以较小的一侧为准
+        if (widthRatio < heightRatio) {
+            tableWidth = maxTableWidth;
+            tableHeight = tableWidth / 3f; // 3:1 比例
+        } else {
+            tableHeight = maxTableHeight;
+            tableWidth = tableHeight * 3f; // 3:1 比例
+        }
+        
+        // 桌面的起始位置（居中显示）
+        tableX = (w - tableWidth) / 2f;
+        tableY = (h - tableHeight) / 2f;
+        
+        // 增大台球大小，能看清数字
+        ballRadius = tableHeight / 20f; // 原来是 /40f，现在增大一倍
+        pocketRadius = ballRadius * 1.5f; // 袋口适当缩小，显得球更大
         
         if (balls.isEmpty()) {
             initGame();
@@ -157,15 +177,15 @@ public class GameView extends View {
             scoreListener.onScoreUpdate(0);
         }
         
-        // 白球位置
-        float cueX = tableWidth * 0.25f;
-        float cueY = tableHeight / 2;
+        // 白球位置（考虑桌面偏移）
+        float cueX = tableX + tableWidth * 0.25f;
+        float cueY = tableY + tableHeight / 2;
         cueBall = new Ball(cueX, cueY, BALL_COLORS[0], 0);
         balls.add(cueBall);
         
-        // 摆球（三角形）
-        float startX = tableWidth * 0.7f;
-        float startY = tableHeight / 2;
+        // 摆球（三角形），考虑桌面偏移
+        float startX = tableX + tableWidth * 0.7f;
+        float startY = tableY + tableHeight / 2;
         float ballSpacing = ballRadius * 2.2f;
         int ballIndex = 1;
         
@@ -240,12 +260,12 @@ public class GameView extends View {
     
     private void checkPockets() {
         float[][] pockets = {
-            {0, 0},
-            {tableWidth / 2, 0},
-            {tableWidth, 0},
-            {0, tableHeight},
-            {tableWidth / 2, tableHeight},
-            {tableWidth, tableHeight}
+            {tableX + 0, tableY + 0},
+            {tableX + tableWidth / 2, tableY + 0},
+            {tableX + tableWidth, tableY + 0},
+            {tableX + 0, tableY + tableHeight},
+            {tableX + tableWidth / 2, tableY + tableHeight},
+            {tableX + tableWidth, tableY + tableHeight}
         };
         
         for (Ball ball : balls) {
@@ -272,8 +292,8 @@ public class GameView extends View {
                 @Override
                 public void run() {
                     ball.potted = false;
-                    ball.x = tableWidth * 0.25f;
-                    ball.y = tableHeight / 2;
+                    ball.x = tableX + tableWidth * 0.25f;
+                    ball.y = tableY + tableHeight / 2;
                     ball.vx = 0;
                     ball.vy = 0;
                 }
@@ -322,25 +342,29 @@ public class GameView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         
-        // 绘制球桌
-        canvas.drawRect(0, 0, tableWidth, tableHeight, tablePaint);
+        // 绘制球桌背景（考虑偏移）
+        canvas.drawRect(tableX, tableY, tableX + tableWidth, tableY + tableHeight, tablePaint);
         
-        // 绘制袋口
+        // 绘制袋口（考虑偏移）
         float[][] pockets = {
-            {0, 0},
-            {tableWidth / 2, 0},
-            {tableWidth, 0},
-            {0, tableHeight},
-            {tableWidth / 2, tableHeight},
-            {tableWidth, tableHeight}
+            {tableX + 0, tableY + 0},
+            {tableX + tableWidth / 2, tableY + 0},
+            {tableX + tableWidth, tableY + 0},
+            {tableX + 0, tableY + tableHeight},
+            {tableX + tableWidth / 2, tableY + tableHeight},
+            {tableX + tableWidth, tableY + tableHeight}
         };
         
         for (float[] pocket : pockets) {
             canvas.drawCircle(pocket[0], pocket[1], pocketRadius, pocketPaint);
         }
         
-        // 绘制开球线
-        canvas.drawLine(tableWidth * 0.25f, 0, tableWidth * 0.25f, tableHeight, linePaint);
+        // 绘制开球线（考虑偏移）
+        canvas.drawLine(
+            tableX + tableWidth * 0.25f, tableY + 0,
+            tableX + tableWidth * 0.25f, tableY + tableHeight,
+            linePaint
+        );
         
         // 绘制球
         for (Ball ball : balls) {
@@ -360,8 +384,9 @@ public class GameView extends View {
             float dy = dragStartY - dragEndY;
             float power = Math.min((float) Math.sqrt(dx * dx + dy * dy) / 5, 100);
             
-            textPaint.setTextSize(40);
-            canvas.drawText("力度：" + (int)power, 100, 60, textPaint);
+            textPaint.setTextSize(30);
+            textPaint.setColor(Color.WHITE);
+            canvas.drawText("力度：" + (int)power, tableX + 20, tableY - 10, textPaint);
         }
     }
     
@@ -524,21 +549,21 @@ public class GameView extends View {
             if (Math.abs(vx) < 0.05f) vx = 0;
             if (Math.abs(vy) < 0.05f) vy = 0;
             
-            // 边界碰撞
-            if (x - ballRadius < 0) {
-                x = ballRadius;
+            // 边界碰撞（考虑桌面偏移）
+            if (x - ballRadius < tableX) {
+                x = tableX + ballRadius;
                 vx = -vx * 0.8f;
             }
-            if (x + ballRadius > tableWidth) {
-                x = tableWidth - ballRadius;
+            if (x + ballRadius > tableX + tableWidth) {
+                x = tableX + tableWidth - ballRadius;
                 vx = -vx * 0.8f;
             }
-            if (y - ballRadius < 0) {
-                y = ballRadius;
+            if (y - ballRadius < tableY) {
+                y = tableY + ballRadius;
                 vy = -vy * 0.8f;
             }
-            if (y + ballRadius > tableHeight) {
-                y = tableHeight - ballRadius;
+            if (y + ballRadius > tableY + tableHeight) {
+                y = tableY + tableHeight - ballRadius;
                 vy = -vy * 0.8f;
             }
         }
