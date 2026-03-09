@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- 台球桌背景 -->
+    <path
+        android:fillColor="#0d6e3a"
+        android:pathData="M14,34 L94,34 L94,74 L14,74 Z"/>
+    
+    <!-- 8 号黑球 -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M54,54 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0"/>
+    
+    <!-- 数字 8 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,48 C52,48 50,49 50,51 C50,52.5 51,53.5 52.5,54 C51,54.5 50,55.5 50,57 C50,59 51.5,60 54,60 C56.5,60 58,59 58,57 C58,55.5 57,54.5 55.5,54 C57,53.5 58,52.5 58,51 C58,49 56.5,48 54,48 M54,49.5 C55,49.5 55.5,50 55.5,51 C55.5,52 55,52.5 54,52.5 C53,52.5 52.5,52 52.5,51 C52.5,50 53,49.5 54,49.5 M54,55.5 C55,55.5 55.5,56 55.5,57 C55.5,58 55,58.5 54,58.5 C53,58.5 52.5,58 52.5,57 C52.5,56 53,55.5 54,55.5"/>
+    
+    <!-- 袋口 -->
+    <path
+        android:fillColor="#1a1a1a"
+        android:pathData="M14,34 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0"/>
+    <path
+        android:fillColor="#1a1a1a"
+        android:pathData="M94,34 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0"/>
+    <path
+        android:fillColor="#1a1a1a"
+        android:pathData="M14,74 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0"/>
+    <path
+        android:fillColor="#1a1a1a"
+        android:pathData="M94,74 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0"/>
+</vector>
