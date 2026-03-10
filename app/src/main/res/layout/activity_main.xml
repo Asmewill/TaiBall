@@ -1,79 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="#1a1a2e"
     tools:context=".MainActivity">
 
-    <!-- 标题在顶部，尽量靠上 -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="🎱 台球小游戏"
         android:textColor="#FFFFFF"
-        android:textSize="24sp"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_marginTop="8dp"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"/>
 
-    <!-- 游戏视图在中间，固定3:1宽高比 -->
     <com.openclaw.taiball.GameView
         android:id="@+id/gameView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_weight="1"
+        android:layout_margin="16dp"/>
 
-    <!-- 左上角得分显示 -->
-    <LinearLayout
+    <TextView
+        android:id="@+id/scoreText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|top"
-        android:orientation="vertical"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="16dp"
-        android:background="#223344"
-        android:padding="12dp"
-        android:elevation="8dp">
+        android:text="得分：0"
+        android:textColor="#FFD700"
+        android:textSize="24sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"/>
 
-        <TextView
-            android:id="@+id/scoreText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="得分：0"
-            android:textColor="#FFD700"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
-
-    </LinearLayout>
-
-    <!-- 右上角重新开始按钮 -->
-    <LinearLayout
+    <Button
+        android:id="@+id/resetButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|top"
-        android:orientation="vertical"
-        android:layout_marginTop="40dp"
-        android:layout_marginRight="16dp"
-        android:background="#334455"
-        android:padding="12dp"
-        android:elevation="8dp">
+        android:text="🔄 重新开始"
+        android:textSize="18sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:backgroundTint="#E94560"/>
 
-        <Button
-            android:id="@+id/resetButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🔄 重新开始"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:padding="8dp"
-            android:backgroundTint="#E94560"
-            android:elevation="4dp"/>
-
-    </LinearLayout>
-
-</FrameLayout>
+</LinearLayout>
