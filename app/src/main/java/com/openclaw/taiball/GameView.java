@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.Path;
+
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
 import android.graphics.Typeface;
@@ -20,8 +20,16 @@ public class GameView extends View {
     
     // 游戏常量
     private static final float FRICTION = 0.985f;
-    private static final int BALL_RADIUS_DP = 12;
-    private static final int POCKET_RADIUS_DP = 25;
+    private static final float TABLE_ASPECT_RATIO = 1.95f;
+
+    private static final float TABLE_PADDING_DP = 12f;
+    private static final int MAX_POWER = 50;
+    private static final float POWER_DRAG_SCALE = 0.8f;
+    private static final float POWER_TO_SPEED = 0.90f;
+
+
+
+
     
     // 球的颜色
     private static final int[] BALL_COLORS = {
@@ -46,16 +54,20 @@ public class GameView extends View {
     private List<Ball> balls;
     private Ball cueBall;
     private Paint tablePaint;
+    private Paint railPaint;
     private Paint ballPaint;
     private Paint textPaint;
     private Paint cuePaint;
     private Paint pocketPaint;
     private Paint linePaint;
     
+    private float tableLeft;
+    private float tableTop;
     private float tableWidth;
     private float tableHeight;
     private float ballRadius;
     private float pocketRadius;
+
     
     private boolean isDragging = false;
     private float dragStartX, dragStartY;
@@ -93,8 +105,12 @@ public class GameView extends View {
         
         tablePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         tablePaint.setColor(Color.parseColor("#0d6e3a"));
-        
+
+        railPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        railPaint.setColor(Color.parseColor("#6B3F20"));
+
         ballPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
         ballPaint.setStyle(Paint.Style.FILL);
         
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -134,19 +150,31 @@ public class GameView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        
-        tableWidth = w;
-        tableHeight = h;
-        
-        // 根据屏幕大小调整球和袋口大小
-        float minDimension = Math.min(w, h);
-        ballRadius = minDimension / 40;
-        pocketRadius = ballRadius * 2;
-        
+
+        float tablePadding = dpToPx(TABLE_PADDING_DP);
+        float availableWidth = Math.max(0f, w - tablePadding * 2);
+        float availableHeight = Math.max(0f, h - tablePadding * 2);
+
+        if (availableWidth / Math.max(1f, availableHeight) > TABLE_ASPECT_RATIO) {
+            tableHeight = availableHeight;
+            tableWidth = tableHeight * TABLE_ASPECT_RATIO;
+        } else {
+            tableWidth = availableWidth;
+            tableHeight = tableWidth / TABLE_ASPECT_RATIO;
+        }
+
+        tableLeft = (w - tableWidth) / 2f;
+        tableTop = (h - tableHeight) / 2f;
+
+        float minDimension = Math.min(tableWidth, tableHeight);
+        ballRadius = minDimension / 28f;
+        pocketRadius = ballRadius * 2.15f;
+
         if (balls.isEmpty()) {
             initGame();
         }
     }
+
     
     private void initGame() {
         balls.clear();
@@ -322,9 +350,23 @@ public class GameView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         
+        float railWidth = Math.max(8f, ballRadius * 0.9f);
+        canvas.drawRoundRect(
+            tableLeft - railWidth,
+            tableTop - railWidth,
+            tableLeft + tableWidth + railWidth,
+            tableTop + tableHeight + railWidth,
+            railWidth,
+            railWidth,
+            railPaint
+        );
+
+        canvas.save();
+        canvas.translate(tableLeft, tableTop);
+
         // 绘制球桌
         canvas.drawRect(0, 0, tableWidth, tableHeight, tablePaint);
-        
+
         // 绘制袋口
         float[][] pockets = {
             {0, 0},
@@ -334,35 +376,35 @@ public class GameView extends View {
             {tableWidth / 2, tableHeight},
             {tableWidth, tableHeight}
         };
-        
+
         for (float[] pocket : pockets) {
             canvas.drawCircle(pocket[0], pocket[1], pocketRadius, pocketPaint);
         }
-        
+
         // 绘制开球线
         canvas.drawLine(tableWidth * 0.25f, 0, tableWidth * 0.25f, tableHeight, linePaint);
-        
+
         // 绘制球
         for (Ball ball : balls) {
             if (!ball.potted) {
                 drawBall(canvas, ball);
             }
         }
-        
+
         // 绘制球杆
         if (isDragging && !cueBall.potted && !gameOver) {
             drawCue(canvas);
         }
-        
+
+        canvas.restore();
+
         // 绘制力度
         if (isDragging) {
-            float dx = dragStartX - dragEndX;
-            float dy = dragStartY - dragEndY;
-            float power = Math.min((float) Math.sqrt(dx * dx + dy * dy) / 5, 100);
-            
-            textPaint.setTextSize(40);
-            canvas.drawText("力度：" + (int)power, 100, 60, textPaint);
+            float power = getDragPower(dragStartX - dragEndX, dragStartY - dragEndY);
+            drawPowerIndicator(canvas, power);
         }
+
+
     }
     
     private void drawBall(Canvas canvas, Ball ball) {
@@ -401,7 +443,8 @@ public class GameView extends View {
         float dx = dragStartX - dragEndX;
         float dy = dragStartY - dragEndY;
         float angle = (float) Math.atan2(dy, dx);
-        float power = Math.min((float) Math.sqrt(dx * dx + dy * dy) / 5, 100);
+        float power = getDragPower(dx, dy);
+
         
         canvas.save();
         canvas.translate(cueBall.x, cueBall.y);
@@ -413,13 +456,15 @@ public class GameView extends View {
         linePaint.setPathEffect(null);
         
         // 球杆
+        float cuePullBack = power * 0.35f;
         LinearGradient cueGradient = new LinearGradient(
-            -150 - power, 0, -20, 0,
+            -150 - cuePullBack, 0, -20, 0,
             0xFF8B4513, 0xFFDEB887,
             Shader.TileMode.CLAMP
         );
         cuePaint.setShader(cueGradient);
-        canvas.drawRect(-150 - power, -ballRadius / 2, -20, ballRadius / 2, cuePaint);
+        canvas.drawRect(-150 - cuePullBack, -ballRadius / 2, -20, ballRadius / 2, cuePaint);
+
         
         canvas.restore();
     }
@@ -430,16 +475,64 @@ public class GameView extends View {
         hsv[2] *= 0.7f;
         return Color.HSVToColor(hsv);
     }
+
+    private float getDragPower(float dx, float dy) {
+        return Math.min((float) Math.sqrt(dx * dx + dy * dy) / POWER_DRAG_SCALE, MAX_POWER);
+    }
+
+    private void drawPowerIndicator(Canvas canvas, float power) {
+        float ratio = power / MAX_POWER;
+        float barWidth = Math.min(tableWidth * 0.62f, dpToPx(260));
+        float barHeight = dpToPx(10);
+        float left = (getWidth() - barWidth) / 2f;
+        float top = Math.max(dpToPx(6), tableTop - dpToPx(26));
+
+        Paint bgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        bgPaint.setColor(Color.parseColor("#55222222"));
+        canvas.drawRoundRect(left, top, left + barWidth, top + barHeight, barHeight / 2, barHeight / 2, bgPaint);
+
+        int powerColor = ratio < 0.35f ? Color.parseColor("#4CAF50") : (ratio < 0.7f ? Color.parseColor("#FFC107") : Color.parseColor("#F44336"));
+        Paint fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        fillPaint.setColor(powerColor);
+        canvas.drawRoundRect(left, top, left + barWidth * ratio, top + barHeight, barHeight / 2, barHeight / 2, fillPaint);
+
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(Math.max(28f, ballRadius * 1.35f));
+        canvas.drawText("力度：" + (int) power + " / " + MAX_POWER + "（" + getPowerLevelText(ratio) + "）", getWidth() / 2f, top - dpToPx(6), textPaint);
+    }
+
+    private String getPowerLevelText(float ratio) {
+        if (ratio < 0.35f) return "轻击";
+        if (ratio < 0.7f) return "中等";
+        return "重击";
+    }
+
+    private boolean isInsideTable(float x, float y) {
+
+        return x >= 0 && x <= tableWidth && y >= 0 && y <= tableHeight;
+    }
+
+    private float clamp(float value, float min, float max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    private float dpToPx(float dp) {
+        return dp * getResources().getDisplayMetrics().density;
+    }
     
     @Override
+
     public boolean onTouchEvent(MotionEvent event) {
         if (gameOver || cueBall.potted) return true;
-        
-        float x = event.getX();
-        float y = event.getY();
-        
+
+        float x = event.getX() - tableLeft;
+        float y = event.getY() - tableTop;
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if (!isInsideTable(x, y)) {
+                    return true;
+                }
                 float dx = x - cueBall.x;
                 float dy = y - cueBall.y;
                 if (Math.sqrt(dx * dx + dy * dy) < ballRadius * 3) {
@@ -450,31 +543,33 @@ public class GameView extends View {
                     dragEndY = y;
                 }
                 break;
-                
+
             case MotionEvent.ACTION_MOVE:
                 if (isDragging) {
-                    dragEndX = x;
-                    dragEndY = y;
+                    dragEndX = clamp(x, 0, tableWidth);
+                    dragEndY = clamp(y, 0, tableHeight);
                 }
                 break;
-                
+
             case MotionEvent.ACTION_UP:
                 if (isDragging) {
                     float dragDx = dragStartX - dragEndX;
                     float dragDy = dragStartY - dragEndY;
-                    float power = Math.min((float) Math.sqrt(dragDx * dragDx + dragDy * dragDy) / 20, 15);
+                    float power = getDragPower(dragDx, dragDy);
+                    float speed = power * POWER_TO_SPEED;
                     float angle = (float) Math.atan2(dragDy, dragDx);
-                    
-                    cueBall.vx = (float) (Math.cos(angle) * power);
-                    cueBall.vy = (float) (Math.sin(angle) * power);
-                    
+
+                    cueBall.vx = (float) (Math.cos(angle) * speed);
+                    cueBall.vy = (float) (Math.sin(angle) * speed);
+
                     isDragging = false;
                 }
                 break;
         }
-        
+
         return true;
     }
+
     
     public void resetGame() {
         initGame();
