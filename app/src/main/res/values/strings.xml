@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">台球小游戏</string>
+    <string name="app_name">WiFiTools</string>
+
+    <!-- WiFi Connect Screen -->
+    <string name="app_title_wifi">WiFi 连接工具</string>
+    <string name="app_subtitle_wifi">输入 WiFi 名称和密码，自动连接</string>
+    <string name="label_wifi_name">WiFi 名称 (SSID)</string>
+    <string name="label_password">WiFi 密码</string>
+    <string name="hint_ssid">请输入 WiFi 名称</string>
+    <string name="hint_password">请输入 WiFi 密码</string>
+    <string name="btn_connect">连接 WiFi</string>
+    <string name="status_scanning">正在搜索 WiFi 网络…</string>
+    <string name="status_connecting">正在连接，请稍候…</string>
+    <string name="error_ssid_empty">请输入 WiFi 名称</string>
+    <string name="error_password_empty">请输入 WiFi 密码</string>
+
+    <!-- Manual Connect Dialog -->
+    <string name="dialog_title">无法自动连接</string>
+    <string name="dialog_message">未找到该 WiFi 或密码不正确，无法自动连接。\n\n请手动选择并连接 WiFi 设备。</string>
+    <string name="dialog_connect_now">立即连接设备 Wi‑Fi</string>
+    <string name="dialog_cancel">取消</string>
+
+    <!-- WebView -->
+    <string name="webview_title">网页浏览</string>
+    <string name="back">返回</string>
 </resources>
