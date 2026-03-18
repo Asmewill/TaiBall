@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">台球小游戏</string>
+    <string name="app_name">WiFiTools</string>
+    <string name="wifi_connect_title">WiFi 连接</string>
+    <string name="wifi_connect_subtitle">输入WiFi名称和密码，自动连接</string>
+    <string name="hint_ssid">请输入WiFi名称</string>
+    <string name="hint_password">请输入WiFi密码</string>
+    <string name="btn_connect">连接WiFi</string>
+    <string name="dialog_title_failed">无法连接 WiFi</string>
+    <string name="btn_manual_connect">立即连接设备Wi-Fi</string>
+    <string name="btn_cancel">取消</string>
 </resources>
