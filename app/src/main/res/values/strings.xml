@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">台球小游戏</string>
+
+    <!-- WifiActivity -->
+    <string name="wifi_connect_title">Wi-Fi 连接</string>
+    <string name="wifi_connect_subtitle">输入 Wi-Fi 名称和密码，自动搜索并连接</string>
+    <string name="label_ssid">Wi-Fi 名称（SSID）</string>
+    <string name="hint_ssid">请输入 Wi-Fi 名称</string>
+    <string name="label_password">Wi-Fi 密码</string>
+    <string name="hint_password">请输入 Wi-Fi 密码</string>
+    <string name="btn_connect">立即连接</string>
+    <string name="btn_connecting">连接中…</string>
+    <string name="status_searching">正在搜索 Wi-Fi…</string>
+    <string name="status_connected">连接成功！正在跳转…</string>
+    <string name="status_failed">连接失败，请尝试手动连接</string>
+    <string name="status_not_found">未找到该 Wi-Fi，请检查名称或手动连接</string>
+    <string name="error_ssid_empty">请输入 Wi-Fi 名称</string>
+    <string name="error_password_empty">请输入 Wi-Fi 密码</string>
+    <string name="permission_required">需要位置权限才能扫描 Wi-Fi</string>
+
+    <!-- Manual connect dialog -->
+    <string name="dialog_title">无法自动连接</string>
+    <string name="dialog_message">未找到该 Wi-Fi 或密码不正确，请手动前往系统 Wi-Fi 设置页面连接设备。</string>
+    <string name="btn_go_to_wifi">立即连接设备 Wi-Fi</string>
+    <string name="btn_cancel">取消</string>
 </resources>
