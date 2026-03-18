@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WiFiTools</string>
+    <string name="app_title">WiFi 连接工具</string>
+    <string name="app_subtitle">输入设备 WiFi 名称与密码自动连接</string>
+
+    <string name="label_wifi_name">WiFi 名称 (SSID)</string>
+    <string name="label_wifi_password">WiFi 密码</string>
+    <string name="hint_wifi_name">请输入 WiFi 名称</string>
+    <string name="hint_wifi_password">请输入 WiFi 密码</string>
+    <string name="btn_connect">连 接 WiFi</string>
+    <string name="btn_go_to_settings">立即连接设备 Wi-Fi</string>
+    <string name="btn_cancel">取 消</string>
+    <string name="btn_show">显示</string>
+    <string name="btn_hide">隐藏</string>
+    <string name="toggle_password">显示/隐藏密码</string>
+
+    <string name="dialog_title">无法自动连接</string>
+
+    <string name="status_scanning">正在搜索 WiFi：%1$s …</string>
+    <string name="status_connecting">正在连接：%1$s …</string>
+    <string name="status_connected">✅ 连接成功，正在跳转…</string>
+
+    <string name="error_empty_ssid">请输入 WiFi 名称</string>
+    <string name="error_empty_password">请输入 WiFi 密码</string>
+    <string name="error_ssid_not_found">未找到 WiFi「%1$s」，请检查名称后手动连接</string>
+    <string name="error_connection_failed">连接「%1$s」失败，密码可能有误，请手动连接</string>
+    <string name="error_connection_timeout">连接「%1$s」超时，请手动连接</string>
+    <string name="error_permission_denied">缺少必要权限，请手动连接 WiFi</string>
+    <string name="error_add_network_failed">无法添加 WiFi 配置，请手动连接</string>
+    <string name="msg_enable_wifi_first">请先在系统设置中开启 WiFi</string>
+</resources>
