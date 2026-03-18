@@ -1,5 +1,7 @@
 # 🎱 台球小游戏 (TaiBall)
 
+[English README](./README.en.md)
+
 一个基于 Android 的台球游戏，使用 Java 开发。
 
 ## 项目信息
