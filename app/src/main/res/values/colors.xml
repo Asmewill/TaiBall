@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- WiFi theme colors -->
+    <color name="wifi_primary">#1565C0</color>
+    <color name="wifi_primary_dark">#0D47A1</color>
+    <color name="wifi_primary_light">#BBDEFB</color>
+    <color name="wifi_accent">#42A5F5</color>
+    <color name="wifi_background">#F0F4FF</color>
 </resources>
