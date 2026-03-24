@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1a1a2e"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp">
+
+        <!-- WiFi Icon -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="📶"
+            android:textSize="64sp" />
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/wifi_connect_title"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <!-- Subtitle -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/wifi_connect_subtitle"
+            android:textColor="#AAAACC"
+            android:textSize="14sp" />
+
+        <!-- Card background for inputs -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/card_background"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- WiFi Name Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_wifi_name"
+                android:textColor="#CCCCEE"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <!-- WiFi Name Input -->
+            <EditText
+                android:id="@+id/etSsid"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/input_background"
+                android:hint="@string/hint_wifi_name"
+                android:inputType="text"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#666688"
+                android:textSize="16sp" />
+
+            <!-- Password Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/label_password"
+                android:textColor="#CCCCEE"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <!-- Password Input -->
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/input_background"
+                android:hint="@string/hint_password"
+                android:inputType="textPassword"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:singleLine="true"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#666688"
+                android:textSize="16sp" />
+
+            <!-- Show password checkbox -->
+            <CheckBox
+                android:id="@+id/cbShowPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:buttonTint="#6C63FF"
+                android:text="@string/show_password"
+                android:textColor="#AAAACC"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <!-- Connect Button -->
+        <Button
+            android:id="@+id/btnConnect"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#6C63FF"
+            android:text="@string/btn_connect"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Progress bar -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp"
+            android:indeterminateTint="#6C63FF"
+            android:visibility="gone" />
+
+        <!-- Status text -->
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#AAAACC"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</ScrollView>
